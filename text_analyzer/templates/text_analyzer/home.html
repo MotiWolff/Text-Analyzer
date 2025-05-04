@@ -1,0 +1,101 @@
+{% extends 'text_analyzer/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Hero Section -->
+        <div class="text-center mb-5 fade-in">
+            <h1 class="display-4 fw-bold mb-3">Text Analysis Tool</h1>
+            <p class="lead text-muted mb-4">Analyze your text for word frequency, length patterns, and more.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'upload_file' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-upload me-2"></i>Upload File
+                </a>
+                <button class="btn btn-outline-primary btn-lg" onclick="document.getElementById('content').focus()">
+                    <i class="fas fa-paste me-2"></i>Paste Text
+                </button>
+            </div>
+        </div>
+
+        <!-- Analysis Form -->
+        <div class="card shadow-sm fade-in">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Text Analysis</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">
+                            <i class="fas fa-heading me-2"></i>Title (Optional):
+                        </label>
+                        {{ form.title }}
+                        <div class="form-text">Give your analysis a descriptive name</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.content.id_for_label }}" class="form-label fw-bold">
+                            <i class="fas fa-file-alt me-2"></i>Text Content:
+                        </label>
+                        {{ form.content }}
+                        <div class="form-text">Paste your text here for analysis</div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Analyze Text
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row mt-5 g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-chart-pie fa-2x text-primary mb-3"></i>
+                    <h3 class="h5 fw-bold">Word Statistics</h3>
+                    <p class="text-muted mb-0">Get detailed word frequency analysis and patterns</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-ruler fa-2x text-primary mb-3"></i>
+                    <h3 class="h5 fw-bold">Length Analysis</h3>
+                    <p class="text-muted mb-0">Analyze word lengths and find patterns</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-lightbulb fa-2x text-primary mb-3"></i>
+                    <h3 class="h5 fw-bold">Smart Insights</h3>
+                    <p class="text-muted mb-0">Discover unique patterns and relationships</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .feature-card {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: var(--border-radius);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-bs-theme="dark"] .feature-card {
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    @media (max-width: 768px) {
+        .feature-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}

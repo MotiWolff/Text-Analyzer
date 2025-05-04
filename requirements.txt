@@ -1,0 +1,7 @@
+Django>=5.0.2
+python-dotenv>=1.0.0
+python-docx>=0.8.11
+PyPDF2>=3.0.0
+chardet>=5.0.0
+gunicorn>=21.2.0
+whitenoise>=6.6.0 

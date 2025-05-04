@@ -1,0 +1,163 @@
+{% extends 'text_analyzer/base.html' %}
+{% load text_analyzer_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Results Header -->
+        <div class="card shadow-sm mb-4 fade-in">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Analysis Results</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="h4 mb-3">{{ analysis.title }}</h3>
+                <div class="text-muted mb-4">
+                    <small><i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at|date:"F j, Y, g:i a" }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4">
+                    <i class="fas fa-text-height fa-2x text-primary mb-3"></i>
+                    <h4 class="h6 fw-bold">Total Words</h4>
+                    <p class="h3 mb-0">{{ analysis.word_count }}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4">
+                    <i class="fas fa-paragraph fa-2x text-primary mb-3"></i>
+                    <h4 class="h6 fw-bold">Sentences</h4>
+                    <p class="h3 mb-0">{{ analysis.sentence_count }}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4">
+                    <i class="fas fa-font fa-2x text-primary mb-3"></i>
+                    <h4 class="h6 fw-bold">Unique Words</h4>
+                    <p class="h3 mb-0">{{ analysis.unique_words_count }}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4">
+                    <i class="fas fa-ruler fa-2x text-primary mb-3"></i>
+                    <h4 class="h6 fw-bold">Avg Word Length</h4>
+                    <p class="h3 mb-0">{{ analysis.average_word_length|floatformat:1 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Frequency -->
+        <div class="card shadow-sm mb-4 fade-in">
+            <div class="card-header bg-light">
+                <h3 class="h5 mb-0"><i class="fas fa-chart-pie me-2"></i>Word Frequency</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Word</th>
+                                <th>Frequency</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for word, count in analysis.frequency_words.items %}
+                            <tr>
+                                <td>{{ word }}</td>
+                                <td>{{ count }}</td>
+                                <td>{{ count|divisibleby:analysis.word_count|multiply:100|floatformat:1 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Length Analysis -->
+        <div class="card shadow-sm mb-4 fade-in">
+            <div class="card-header bg-light">
+                <h3 class="h5 mb-0"><i class="fas fa-ruler me-2"></i>Length Analysis</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="h6 fw-bold mb-3">Longest Words</h4>
+                        <ul class="list-group">
+                            {% for word in analysis.longest_words %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ word }}
+                                <span class="badge bg-primary rounded-pill">{{ word|length }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="h6 fw-bold mb-3">Equal Length Sequences</h4>
+                        <ul class="list-group">
+                            {% for sequence in analysis.equal_length_sequences %}
+                            <li class="list-group-item">
+                                {{ sequence|join:", " }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex justify-content-between mb-5">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>New Analysis
+            </a>
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print me-2"></i>Print Results
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: var(--border-radius);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-bs-theme="dark"] .stat-card {
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    @media print {
+        .btn, .card-header {
+            display: none !important;
+        }
+        
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .card-body {
+            padding: 0 !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stat-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,1 @@
+web: gunicorn cyberLibrary.wsgi:application --log-file - 

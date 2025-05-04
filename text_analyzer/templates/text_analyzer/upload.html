@@ -1,0 +1,108 @@
+{% extends 'text_analyzer/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Upload Section -->
+        <div class="card shadow-sm mb-5 fade-in">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-upload me-2"></i>Upload File for Analysis</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">
+                            <i class="fas fa-heading me-2"></i>Title (Optional):
+                        </label>
+                        {{ form.title }}
+                        <div class="form-text">Give your analysis a descriptive name</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.file.id_for_label }}" class="form-label fw-bold">
+                            {{ form.file.label }}
+                        </label>
+                        {{ form.file }}
+                        <div class="form-text">{{ form.file.help_text }}</div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Analyze File
+                        </button>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Text Input
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Supported Formats -->
+        <div class="card shadow-sm fade-in">
+            <div class="card-header bg-light">
+                <h3 class="h5 mb-0"><i class="fas fa-info-circle me-2"></i>Supported File Formats</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="format-card text-center p-3">
+                            <i class="fas fa-file-alt fa-2x text-primary mb-3"></i>
+                            <h4 class="h6 fw-bold">Text Files</h4>
+                            <p class="small text-muted mb-0">.txt</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="format-card text-center p-3">
+                            <i class="fas fa-file-word fa-2x text-primary mb-3"></i>
+                            <h4 class="h6 fw-bold">Word Documents</h4>
+                            <p class="small text-muted mb-0">.doc, .docx</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="format-card text-center p-3">
+                            <i class="fas fa-file-pdf fa-2x text-primary mb-3"></i>
+                            <h4 class="h6 fw-bold">PDF Files</h4>
+                            <p class="small text-muted mb-0">.pdf</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="format-card text-center p-3">
+                            <i class="fas fa-file-upload fa-2x text-primary mb-3"></i>
+                            <h4 class="h6 fw-bold">Max Size</h4>
+                            <p class="small text-muted mb-0">10MB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .format-card {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: var(--border-radius);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .format-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-bs-theme="dark"] .format-card {
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    [data-bs-theme="dark"] .card-header.bg-light {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    @media (max-width: 768px) {
+        .format-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
