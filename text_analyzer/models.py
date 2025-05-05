@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from .utils import analyze_text
 import logging
@@ -21,6 +21,7 @@ class TextAnalysis(models.Model):
     frequency_words = models.JSONField(default=dict)
     equal_length_sequences = models.JSONField(default=list)
     
+    @transaction.atomic
     def analyze(self):
         """Analyze the text content and save results"""
         try:
@@ -37,8 +38,12 @@ class TextAnalysis(models.Model):
             self.frequency_words = results['frequency_words']
             self.equal_length_sequences = results['equal_length_sequences']
             
+            # Save and refresh from database
             self.save()
+            self.refresh_from_db()
+            
             logger.info(f"Analysis saved successfully with ID: {self.id}")
+            return self.id
         except Exception as e:
             logger.error(f"Error in analyze method: {str(e)}")
             raise

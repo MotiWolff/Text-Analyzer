@@ -10,7 +10,7 @@ import PyPDF2
 import chardet
 from django.core.exceptions import ValidationError
 import logging
-from django.db import connection
+from django.db import connection, transaction
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ def ensure_table_exists():
     except Exception as e:
         logger.error(f"Error creating table: {str(e)}")
 
+@transaction.atomic
 def home(request):
     try:
         ensure_table_exists()
@@ -45,9 +46,9 @@ def home(request):
             if form.is_valid():
                 try:
                     analysis = form.save(commit=False)
-                    analysis.analyze()
-                    if analysis.id:  # Make sure we have an ID before redirecting
-                        return redirect('results', analysis_id=analysis.id)
+                    analysis_id = analysis.analyze()
+                    if analysis_id:
+                        return redirect('results', analysis_id=analysis_id)
                     else:
                         messages.error(request, 'Error saving analysis. Please try again.')
                 except Exception as e:
@@ -63,6 +64,7 @@ def home(request):
         messages.error(request, 'An error occurred. Please try again.')
         return render(request, 'text_analyzer/home.html', {'form': TextAnalysisForm()})
 
+@transaction.atomic
 def upload_file(request):
     try:
         ensure_table_exists()
@@ -100,9 +102,9 @@ def upload_file(request):
                         title=form.cleaned_data['title'] or uploaded_file.name,
                         content=file_content
                     )
-                    analysis.analyze()
-                    if analysis.id:  # Make sure we have an ID before redirecting
-                        return redirect('results', analysis_id=analysis.id)
+                    analysis_id = analysis.analyze()
+                    if analysis_id:
+                        return redirect('results', analysis_id=analysis_id)
                     else:
                         messages.error(request, 'Error saving analysis. Please try again.')
                 except Exception as e:
@@ -117,6 +119,7 @@ def upload_file(request):
         messages.error(request, 'An error occurred. Please try again.')
         return render(request, 'text_analyzer/upload.html', {'form': FileUploadForm()})
 
+@transaction.atomic
 def results(request, analysis_id):
     try:
         ensure_table_exists()
