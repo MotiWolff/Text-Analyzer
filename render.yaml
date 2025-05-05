@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cyberlibrary
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn cyberLibrary.wsgi:application
+    envVars:
+      - key: DJANGO_DEBUG
+        value: False
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
+      - key: PYTHON_VERSION
+        value: 3.10.5 
