@@ -2,7 +2,7 @@ services:
   - type: web
     name: cyberlibrary
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: chmod +x build.sh && ./build.sh
     startCommand: gunicorn cyberLibrary.wsgi:application
     envVars:
       - key: DJANGO_DEBUG
