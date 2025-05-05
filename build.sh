@@ -4,6 +4,11 @@ set -o errexit
 
 echo "Starting build process..."
 
+# Create data directory
+echo "Creating data directory..."
+mkdir -p data
+chmod 777 data
+
 # Install dependencies
 echo "Installing dependencies..."
 pip install -r requirements.txt
