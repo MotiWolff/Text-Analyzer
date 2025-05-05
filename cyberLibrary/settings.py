@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,15 +78,11 @@ WSGI_APPLICATION = 'cyberLibrary.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Get the directory where the database should be stored
-DB_DIR = os.path.join(BASE_DIR, 'data')
-os.makedirs(DB_DIR, exist_ok=True)
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DB_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
 }
 
 
