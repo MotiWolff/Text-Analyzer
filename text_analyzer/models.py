@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from .utils import analyze_text
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TextAnalysis(models.Model):
     title = models.CharField(max_length=200, blank=True)
@@ -20,20 +23,25 @@ class TextAnalysis(models.Model):
     
     def analyze(self):
         """Analyze the text content and save results"""
-        results = analyze_text(self.content)
-        
-        # Update model fields with analysis results
-        self.word_count = results['word_count']
-        self.sentence_count = results['sentence_count']
-        self.unique_words_count = results['unique_words_count']
-        self.most_common_word = results['most_common_word'][0]
-        self.most_common_word_count = results['most_common_word'][1]
-        self.average_word_length = results['average_word_length']
-        self.longest_words = results['longest_words']
-        self.frequency_words = results['frequency_words']
-        self.equal_length_sequences = results['equal_length_sequences']
-        
-        self.save()
+        try:
+            results = analyze_text(self.content)
+            
+            # Update model fields with analysis results
+            self.word_count = results['word_count']
+            self.sentence_count = results['sentence_count']
+            self.unique_words_count = results['unique_words_count']
+            self.most_common_word = results['most_common_word'][0]
+            self.most_common_word_count = results['most_common_word'][1]
+            self.average_word_length = results['average_word_length']
+            self.longest_words = results['longest_words']
+            self.frequency_words = results['frequency_words']
+            self.equal_length_sequences = results['equal_length_sequences']
+            
+            self.save()
+            logger.info(f"Analysis saved successfully with ID: {self.id}")
+        except Exception as e:
+            logger.error(f"Error in analyze method: {str(e)}")
+            raise
     
     def __str__(self):
         return self.title or f"Analysis {self.id}"

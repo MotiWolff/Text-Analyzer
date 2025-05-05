@@ -43,9 +43,16 @@ def home(request):
         if request.method == 'POST':
             form = TextAnalysisForm(request.POST)
             if form.is_valid():
-                analysis = form.save(commit=False)
-                analysis.analyze()
-                return redirect('results', analysis_id=analysis.id)
+                try:
+                    analysis = form.save(commit=False)
+                    analysis.analyze()
+                    if analysis.id:  # Make sure we have an ID before redirecting
+                        return redirect('results', analysis_id=analysis.id)
+                    else:
+                        messages.error(request, 'Error saving analysis. Please try again.')
+                except Exception as e:
+                    logger.error(f"Error analyzing text: {str(e)}")
+                    messages.error(request, 'Error analyzing text. Please try again.')
             else:
                 messages.error(request, 'Please correct the errors below.')
         else:
@@ -94,7 +101,10 @@ def upload_file(request):
                         content=file_content
                     )
                     analysis.analyze()
-                    return redirect('results', analysis_id=analysis.id)
+                    if analysis.id:  # Make sure we have an ID before redirecting
+                        return redirect('results', analysis_id=analysis.id)
+                    else:
+                        messages.error(request, 'Error saving analysis. Please try again.')
                 except Exception as e:
                     logger.error(f"Error processing file: {str(e)}")
                     form.add_error('file', 'Error processing file. Please try again.')
