@@ -10,11 +10,36 @@ import PyPDF2
 import chardet
 from django.core.exceptions import ValidationError
 import logging
+from django.db import connection
 
 logger = logging.getLogger(__name__)
 
+def ensure_table_exists():
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS text_analyzer_textanalysis (
+                    id SERIAL PRIMARY KEY,
+                    title VARCHAR(200) NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                    word_count INTEGER NOT NULL,
+                    sentence_count INTEGER NOT NULL,
+                    unique_words_count INTEGER NOT NULL,
+                    most_common_word VARCHAR(100) NOT NULL,
+                    most_common_word_count INTEGER NOT NULL,
+                    average_word_length FLOAT NOT NULL,
+                    longest_words JSONB NOT NULL,
+                    frequency_words JSONB NOT NULL,
+                    equal_length_sequences JSONB NOT NULL
+                );
+            """)
+    except Exception as e:
+        logger.error(f"Error creating table: {str(e)}")
+
 def home(request):
     try:
+        ensure_table_exists()
         if request.method == 'POST':
             form = TextAnalysisForm(request.POST)
             if form.is_valid():
@@ -33,6 +58,7 @@ def home(request):
 
 def upload_file(request):
     try:
+        ensure_table_exists()
         if request.method == 'POST':
             form = FileUploadForm(request.POST, request.FILES)
             if form.is_valid():
@@ -83,6 +109,7 @@ def upload_file(request):
 
 def results(request, analysis_id):
     try:
+        ensure_table_exists()
         analysis = TextAnalysis.objects.get(id=analysis_id)
         return render(request, 'text_analyzer/results.html', {'analysis': analysis})
     except TextAnalysis.DoesNotExist:
