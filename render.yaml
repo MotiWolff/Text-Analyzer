@@ -2,7 +2,9 @@ services:
   - type: web
     name: cyberlibrary
     env: python
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: |
+      chmod +x build.sh
+      ./build.sh
     startCommand: gunicorn cyberLibrary.wsgi:application
     envVars:
       - key: DJANGO_DEBUG
