@@ -6,7 +6,8 @@ set -o errexit
 pip install -r requirements.txt
 
 # Run migrations
-python manage.py makemigrations
+python manage.py makemigrations text_analyzer
+python manage.py migrate text_analyzer
 python manage.py migrate
 
 # Collect static files
