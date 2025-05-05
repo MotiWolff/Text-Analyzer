@@ -15,9 +15,14 @@ pip install -r requirements.txt
 
 # Run migrations
 echo "Running migrations..."
+cd /opt/render/project/src
 python manage.py makemigrations text_analyzer --verbosity 3
 python manage.py migrate text_analyzer --verbosity 3
 python manage.py migrate --verbosity 3
+
+# Verify migrations
+echo "Verifying migrations..."
+python manage.py showmigrations text_analyzer
 
 # Collect static files
 echo "Collecting static files..."
