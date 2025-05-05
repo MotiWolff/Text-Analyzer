@@ -5,7 +5,7 @@ services:
     buildCommand: |
       chmod +x build.sh
       ./build.sh
-    startCommand: gunicorn cyberLibrary.wsgi:application
+    startCommand: gunicorn -c gunicorn.conf.py cyberLibrary.wsgi:application
     envVars:
       - key: DJANGO_DEBUG
         value: False

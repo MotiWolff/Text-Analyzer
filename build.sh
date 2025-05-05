@@ -7,6 +7,7 @@ echo "Starting build process..."
 # Install dependencies
 echo "Installing dependencies..."
 pip install -r requirements.txt
+pip install gunicorn
 
 # Run migrations
 echo "Running migrations..."
